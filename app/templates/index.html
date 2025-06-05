@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback App - Залиште свій відгук</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>
+                <span class="material-icons" style="vertical-align: middle; margin-right: 8px; font-size: 2.125rem;">feedback</span>
+                Залиште свій відгук
+            </h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'success' %}
+                                <span class="material-icons" style="color: #4caf50;">check_circle</span>
+                            {% elif category == 'danger' %}
+                                <span class="material-icons" style="color: #f44336;">error</span>
+                            {% else %}
+                                <span class="material-icons" style="color: #2196f3;">info</span>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('main.submit_feedback') }}" method="POST">
+                {{ form.hidden_tag() }}
+
+                <div class="form-field">
+                    {{ form.name(placeholder=" ", id="name") }}
+                    <label for="name">Ваше ім'я</label>
+                </div>
+
+                <div class="form-field">
+                    {{ form.email(placeholder=" ", id="email", type="email") }}
+                    <label for="email">Ваш Email</label>
+                </div>
+
+                <div class="form-field">
+                    {{ form.content(placeholder=" ", id="content", rows="4") }}
+                    <label for="content">Ваш відгук</label>
+                </div>
+
+                <button type="submit" class="ripple">
+                    <span class="material-icons" style="vertical-align: middle; margin-right: 8px;">send</span>
+                    Надіслати відгук
+                </button>
+            </form>
+        </div>
+
+        <div class="nav-actions">
+            <a href="{{ url_for('main.login') }}" style="text-decoration: none;">
+                <button type="button" class="btn-outlined ripple">
+                    <span class="material-icons" style="vertical-align: middle; margin-right: 8px;">login</span>
+                    Адміністратор
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const content = document.getElementById('content').value.trim();
+
+            if (!name || !email || !content) {
+                e.preventDefault();
+                alert('Будь ласка, заповніть всі поля');
+            }
+        });
+
+        document.querySelectorAll('.ripple').forEach(button => {
+            button.addEventListener('click', function(e) {
+            });
+        });
+    </script>
+</body>
+</html>
